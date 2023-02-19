@@ -7,6 +7,7 @@ on:
   schedule:
     # 日本時間で毎晩 21 時
     - cron: '0 12 * * *'
+    
 defaults:
   run:
     working-directory: backend
@@ -23,6 +24,9 @@ jobs:
       - run: npm ci
       - run: npm run test -- --coverage
       - run: npm run build
+      
+      - run: node dist/index.js &
+      - run: npm run test:api
       
       - uses: actions/upload-artifact@v3
         if: always()
