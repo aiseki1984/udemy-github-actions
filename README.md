@@ -1,2 +1,3 @@
 # udemy-github-actions
-udemy lesson
+
+Gitの練習
