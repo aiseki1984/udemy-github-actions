@@ -4,9 +4,20 @@ on:
   push: 
     branches:
       - main
+      
+  defaults:
+    run:
+      working-directory: backend
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - run: echo hello world
+      - uses: action/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-versions: 16.x
+      
+      - run: npm ci
+      - run: npm run test
+      - run: npm run build
