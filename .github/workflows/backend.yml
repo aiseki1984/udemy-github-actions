@@ -21,3 +21,14 @@ jobs:
       - run: npm ci
       - run: npm run test
       - run: npm run build
+      
+      - uses: actions/upload-artifact@v3
+        with:
+          name: mycoverage
+          path: backend/coverage/**
+          retention-days: 5
+      - uses: actions/upload-artifact@v3
+        with:
+          name: dist
+          path: backend/dist/index.js
+          retention-days: 5
