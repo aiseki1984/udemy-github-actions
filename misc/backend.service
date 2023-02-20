@@ -1,0 +1,11 @@
+[Unit]
+Description=Express
+
+[Service]
+ExecStart=/usr/bin/node index.js
+WorkingDirectory=/home/ubuntu
+Restart=always
+Environment=NODE_ENV=production PORT=80
+
+[Install]
+WantedBy=multi-user.target
