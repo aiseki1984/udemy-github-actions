@@ -1,13 +1,13 @@
 name: backend
 
 on:
-  push: 
+  push:
     branches:
       - main
   schedule:
     # 日本時間で毎晩 21 時
-    - cron: '0 12 * * *'
-    
+    - cron: "0 12 * * *"
+
 defaults:
   run:
     working-directory: backend
@@ -20,15 +20,15 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-versions: 16.x
-      
+
       - run: npm ci
       - run: npm run test -- --coverage
       - run: npm run build
-      
+
       - run: node dist/index.js &
       - run: npx wait-on -t 10000 http://localhost:8080/api/health
       - run: npm run test:api
-      
+
       - uses: actions/upload-artifact@v3
         if: always()
         with:
@@ -40,3 +40,25 @@ jobs:
           name: dist
           path: backend/dist/index.js
           retention-days: 5
+
+  deploy:
+    needs: build
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: shimataro/ssh-key-action@v2
+        with:
+          key: ${{ secrets.BACKEND_SERVER_SSH_KEY }}
+          known_hosts: ${{ secrets.BACKEND_SERVER_KNOWN_HOSTS }}
+      - run: rsync -v dist/index.js ${SERVER_USER}@${SERVER_IP}:~/index.js
+        env:
+          SERVER_USER: ${{ secrets.BACKEND_SERVER_USER}}
+          SERVER_IP: ${{ secrets.BACKEND_SERVER_IP}}
+      - run: ssh ${SERVER_USER}@${SERVER_IP} sudo systemctl restart backend
+        env:
+          SERVER_USER: ${{ secrets.BACKEND_SERVER_USER}}
+          SERVER_IP: ${{ secrets.BACKEND_SERVER_IP}}
+      - run: ssh ${SERVER_USER}@${SERVER_IP} systemctl status backend
+        env:
+          SERVER_USER: ${{ secrets.BACKEND_SERVER_USER}}
+          SERVER_IP: ${{ secrets.BACKEND_SERVER_IP}}
