@@ -21,7 +21,7 @@ jobs:
       - uses: actions/checkout@v3
       - uses: aws-actions/configure-aws-credentials@v1
         with:
-          role-to-assume: arn:aws:iam::945788247695:oidc-provider/token.actions.githubusercontent.com
+          role-to-assume: arn:aws:iam::945788247695:role/udemy-github-actions-frontend-deployment-roll
           aws-region: ap-northeast-1
 
       - run: aws s3 sync . s3://udemy-github-actions-s3-oshima --exact-timestamps --region ap-northeast-1
