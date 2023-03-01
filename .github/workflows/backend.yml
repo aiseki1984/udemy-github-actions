@@ -5,7 +5,7 @@ on:
     branches:
       - main
     paths:
-      - 'frontend/**'
+      - 'backend/**'
       - '.github/**'
   schedule:
     # 日本時間で毎晩 21 時
